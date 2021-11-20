@@ -1,18 +1,22 @@
 <?php
-// Démarrage de la session
-session_start();
-// On inclut la connexion à la base de données
-require_once 'config.php';
+session_start(); // Démarrage de la session
+require_once 'config.php'; // On inclut la connexion à la base de données
 
-// Si il existe les champs email, password et qu'il sont pas vident
-if (isset($_POST['email']) && isset($_POST['password'])) {
-
+if (!empty($_POST['email']) && !empty($_POST['password'])) // Si il existe les champs email, password et qu'il sont pas vident
+{
+    // Patch XSS
     $email = htmlspecialchars($_POST['email']);
     $password = htmlspecialchars($_POST['password']);
-    $check = $bdd->prepare('SELECT pseudo, email ,password FROM utilisateurs WHERE email = ?');
-    $check->execute(array($email,));
+
+    $email = strtolower($email); // email transformé en minuscule
+
+    // On regarde si l'utilisateur est inscrit dans la table utilisateurs
+    $check = $bdd->prepare('SELECT pseudo, email, password, token FROM utilisateurs WHERE email = ?');
+    $check->execute(array($email));
     $data = $check->fetch();
     $row = $check->rowCount();
+
+
 
     // Si > à 0 alors l'utilisateur existe
     if ($row > 0) {
