@@ -10,4 +10,8 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     $check = $bdd->prepare('SELECT pseudo, email ,password FROM utilisateurs WHERE email = ?');
     $check->execute(array($email,));
     $data = $check->fetch();
+
+
+    if ($row == 1) {
+    } else header('Location:index.php?login_err=already');
 } else header('Location:index.php');
