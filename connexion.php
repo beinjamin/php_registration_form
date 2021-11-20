@@ -13,5 +13,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 
 
     if ($row == 1) {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        } else header("Location:index.php?login_err=email");
     } else header('Location:index.php?login_err=already');
 } else header('Location:index.php');
